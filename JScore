@@ -1,0 +1,200 @@
+var userName = function(){prompt ("What is your name?");}
+var start = alert ("Hello " + userName + " !")
+/*knight.tools should not be called for damage, 
+only to be displayed with a for loop for user interaction*/
+var knight = function() {
+	this.name = userName();
+	this.tools = ["sword, shield, magic, javelin"];
+	this.alive = true;
+	this.dead = false;
+	this.health = 600;
+}
+/*knight tools function is useless so don't call it for anything, 
+it is only meant for organizing the prototype behaviors*/
+var knightTools = function() {
+	this.sword = [];
+	this.magic = [];
+	this.shield = [];
+	this.javelin = [];
+}
+
+/*when used, subtracts the damage from the Dragon's health*/
+knightTools.prototype.damage = function(){
+	this.sword = 120;
+	this.magic = 300;
+	this.shield = 300;
+	this.javelin = 180;
+}
+
+/*When uses are exhausted, that tool can no longer be called*/
+knightTools.prototype.uses = function(){
+	this.sword = 10;
+	this.magic = 2;
+	this.shield = 5;
+	this.javelin = 6;
+}
+
+knight.prototype.speak = function (words){
+	alert (userName + " " + words);
+}
+
+var yourPlayer = new knight();
+
+var dragon = function(){
+	this.alive = true;
+	this.dead = false;
+	this.attacks = ["claws", "fire", "fangs"];
+	this.health = 1000;
+}
+var dragonAttacks = function(){
+	this.claws = [];
+	this.fire = [];
+	this.fangs = [];
+}
+dragon.prototype.speak = function (words){
+	alert ("Dragon: " + words);
+}
+dragonAttacks.prototype.damage = function(){
+	this.claws = 170;
+	this.fire = 350;
+	this.fangs = 200;
+}
+dragonAttacks.prototype.uses = function(){
+	this.claws = 10;
+	this.fire = 2;
+	this.fangs = 6;
+}
+var yourDragon = new dragon();
+
+/*core gameplay function, allows for damage to the dragon when it is the players turn, 
+and regulates how many uses you have left for that tool*/
+var playerTurn = function(){
+	var grabTool = prompt("What tool do you choose to use? Options are: Sword, Shield, Magic, Javelin");
+	var grabToolCase = grabTool.toLowerCase();
+	if (knightTools.uses.sword > 0 && grabToolCase === "sword"){
+
+		alert ("You chose to use the sword! The sword did " + knightTools.damage.sword + " damage to the dragon!");
+		dragon.health = (dragon.health - knightTools.damage.sword);
+		knightTools.uses.sword = (knightTools.uses.sword - 1);
+		dragon.speak ("RAWWWWWWWWR, ouch!");
+
+	} else if (knightTools.uses.shield > 0 && grabToolCase === "shield") {
+
+		alert ("You chose to use the shield! The shield gave you 300 health points!")
+		knight.health = (knight.health + knightTools.damage.shield);
+		knightTools.uses.shield = (knightTools.uses.shield - 1);
+		knight.speak ("Haha!");
+
+	} else if (knightTools.uses.magic > 0 && grabToolCase === "magic") {
+
+		alert ("You chose to use magic! Your magic did " + knightTools.damage.magic + " damage to the dragon!");
+		dragon.health = (dragon.health - knightTools.damage.magic);
+		knightTools.uses.magic = (knightTools.uses.magic - 1);
+		dragon.speak("RAWWWWWWWWR, ouch!");
+
+	} else if (knightTools.uses.javelin > 0 && grabToolCase === "javelin"){
+
+		alert ("You chose to use the javelin! The javelin did " + knightTools.damage.magic + " damage to the dragon!");
+		dragon.health = (dragon.health - knightTools.damage.javelin);
+		knightTools.uses.javelin = (knightTools.uses.javelin - 1);
+		dragon.speak ("RAWWWWWWWWR, ouch!");
+
+	} else if (knightTools.uses.sword <= 0 && grabToolCase === "sword") {
+
+		alert ("Your sword is broken! You will have to finish the dragon without it!");
+
+	}  else if (knightTools.uses.shield <= 0 && grabToolCase === "shield") {
+
+		alert ("Your shield is broken! You will have to finish the dragon without it");
+
+	} else if (knightTools.uses.magic <= 0 && grabToolCase === "magic") {
+
+		alert ("Your magic is exhausted! You will have to finish the Dragon without it");
+
+	} else if (knightTools.uses.javelin <= 0 && grabToolCase === "javelin") {
+
+		alert ("You can't use that anymore! Try again next turn.");
+
+	} else {
+
+		alert ("I didn't understand your choice, try again next turn.");
+	}
+
+}
+
+/*core gameplay function #2, allows for damage to knight during dragons turn*/
+var dragonTurn = function () {
+	var attackChance = math.floor(math.random()*3 + 1);
+	if (attackChance === 1 && dragonAttacks.uses.claws >= 1) {
+		alert ("The Dragon raked you with it's claws! This attack did " + dragonAttacks.damage.claws + " to you!");
+		dragonAttacks.uses.claws = (dragonAttacks.uses.claws);
+		knight.health = (knight.health - dragonAttacks.damage.claws);
+		knight.speak("YOWZERS!");
+	} else if (attackChance === 2 && dragonAttacks.uses.fire >= 1) {
+		alert ("The Dragon burnt you with her fire! This attack did " + dragonAttacks.damage.fire + " to you!");
+		dragonAttacks.uses.fire = (dragonAttacks.uses.fire - 1);
+		knight.health = (knight.health - dragonAttacks.damage.fire);
+		knight.speak("YOWZERS!");
+	} else if (attackChance === 3 && dragonAttacks.uses.fangs >= 1){
+		alert ("The Dragon bit you with her fangs! This attack did " + dragonAttacks.damage.fangs + " to you!");
+		dragonAttacks.uses.fire = (dragonAttacks.uses.fire - 1);
+		knight.health = (knight.health - dragonAttacks.damage.fire);
+		knight.speak("YOWZERS!");
+	} else if (attackChance === 1 && dragonAttacks.uses.claws <= 0) {
+		alert ("The dragon tried to use it's claws but it couldn't!")
+	} else if (attackChance === 2 && dragonAttacks.uses.fire <= 0) {
+		alert ("The dragon tried burn you with it's fire but it couldn't!")
+	} else if (attackChance === 3 && dragonAttacks.uses.fangs <= 0) {
+		alert ("The dragon tried to bite you with it's fangs but it couldn't!")
+	}
+}
+var turnEnd = function () {
+	alert ("Here are the results of the round:");
+	alert (userName + ": " + knight.health);
+	alert ("Dragon" + ": " + dragon.health);
+}
+var story = function (){
+	alert ("A long, long time ago in a");
+	alert ("forest, far away...");
+	alert ("There lived a lady dragon...");
+	alert ("Now this was not an evil dragon, but she wasn't very nice to humans...");
+	alert ("And the people of the nearby village were very afraid of this dragon...")
+	alert ("One day, a young boy, who's name I can't remember stole one of the Dragon's eggs...");
+	alert ("So of course, being a mother dragon, she had to get it back...");
+	alert ("So now begins our story...");
+	alert ("You are the night, trying to protect your village against that nasty dragon...");
+	alert ("And that boy's stupidity.");
+}
+story();
+/*puts all of the work into action*/
+var gameOn = function () {
+	alert ("The dragon approaches!");
+	dragon.speak ("RAWWWWWWWWR");
+	knight.speak ("Avast foul beast! Prepare to taste my blade!");
+	dragon.speak ("Really dude? I just want my egg back!");
+	var turns = function (){
+		math.floor(math.random() * 2 + 1);
+	}
+	turn();
+	if (firstTurn === 1){
+		alert ("It is your turn first.")
+		while (knight.health >= 0 || dragon.health >= 0) {
+			playerTurn();
+			dragonTurn();
+			turnEnd();
+		};
+	} else if (firstTurn === 2){
+		alert ("It is the dragon's turn first.")
+		while (knight.health >= 0 || dragon.healht >= 0){
+			dragonTurn();
+			playerTurn();
+		}
+	} else if (dragon.health <= 0){
+		alert ("The dragon has been defeated!"); 
+		alert ("You get to keep your useless egg, and live with the knowledge that you just killed one of nature's most majestic beasts.");
+	} else if (knight.health <= 0){
+		alert ("You died, well isn't that a shame.")
+		alert ("On the bright side of things, the dragon got her egg back, and the circle of life continues.")
+	}
+}
+gameOn();
